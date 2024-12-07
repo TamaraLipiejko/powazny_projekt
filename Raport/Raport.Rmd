@@ -1,0 +1,18 @@
+---
+title: "Raport"
+author: "Tamara Lipiejko, Daria Lessnau, Amelia Sørensen, Adrianna Ceynowa"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true        # Dodanie spisu treści
+    toc_depth: 2 
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+## Introduction
