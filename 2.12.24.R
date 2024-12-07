@@ -1,6 +1,7 @@
 install.packages("naniar")
 install.packages("dplyr")
 install.packages("ggplot2")
+install.packages("prettydoc")
 library(naniar)
 library(dplyr)
 library(ggplot2)
