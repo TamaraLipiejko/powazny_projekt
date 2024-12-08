@@ -49,6 +49,14 @@ rules <- validator(
   Rating >= 1 & Rating <= 10                    # Rating musi być w przedziale 1-10
 )
 
+# Aplikowanie reguł do danych
+validation_results <- confront(supermarket_new, rules)
+
+# Podsumowanie wyników walidacji
+summary(validation_results)
+
+# Szczegóły wyników
+print(validation_results)
 
 miss_var_summary(supermarket_new)
 # tabelka pokazująca w jakich kolumnach mamy NA (gross income - 150, Rating - 150, City - 100)
