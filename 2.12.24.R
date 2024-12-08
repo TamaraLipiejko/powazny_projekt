@@ -12,6 +12,8 @@ install.packages("editrules") #reguły
 install.packages("VIM")
 install.packages("validate")
 install.packages("editrules")
+install.packages("errorlocate")
+library(errorlocate)
 library(mice)
 library(naniar)
 library(dplyr)
@@ -48,7 +50,7 @@ summary(supermarket_new)
 # Tworzenie zbioru reguł walidacji
 rules <- validator(
   `Unit price` > 0,                              # Cena jednostkowa musi być większa od 0
-  Total == `Unit price` * Quantity + `Tax 5%`,  # Total musi być obliczone poprawnie
+  Total <= `Unit price` * Quantity + `Tax 5%`,  # Total musi być obliczone poprawnie
   Rating >= 1 & Rating <= 10                    # Rating musi być w przedziale 1-10
 )
 
@@ -60,6 +62,12 @@ summary(validation_results)
 
 # Szczegóły wyników
 print(validation_results)
+
+czyste_dane <-
+  supermarket_new %>%
+  replace_errors(rules)
+
+errors_removed(czyste_dane)
 
 miss_var_summary(supermarket_new)
 # tabelka pokazująca w jakich kolumnach mamy NA (gross income - 150, Rating - 150, City - 100)
@@ -121,3 +129,6 @@ library(corrplot)
 correlation_matrix <- cor(is.na(supermarket_new), use = "pairwise.complete.obs")
 corrplot(correlation_matrix, method = "square")
 #nie ma współzależności między brakami danych w kolumnach 
+
+czyste_dane <- hotdeck(supermarket_new)
+czyste_dane
