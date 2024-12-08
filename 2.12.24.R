@@ -42,6 +42,14 @@ for (n in colnames(supermarket_new)){
 }
 summary(supermarket_new)
 
+# Tworzenie zbioru reguł walidacji
+rules <- validator(
+  `Unit price` > 0,                              # Cena jednostkowa musi być większa od 0
+  Total == `Unit price` * Quantity + `Tax 5%`,  # Total musi być obliczone poprawnie
+  Rating >= 1 & Rating <= 10                    # Rating musi być w przedziale 1-10
+)
+
+
 miss_var_summary(supermarket_new)
 # tabelka pokazująca w jakich kolumnach mamy NA (gross income - 150, Rating - 150, City - 100)
 
