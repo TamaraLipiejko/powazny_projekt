@@ -6,6 +6,9 @@ library(naniar)
 library(dplyr)
 library(ggplot2)
 
+library(readr)
+supermarket_new <- read_csv("supermarket_new.csv")
+
 n_miss(supermarket_new)
 # jest 400 NA w danych
 
