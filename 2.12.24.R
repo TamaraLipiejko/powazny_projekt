@@ -87,3 +87,8 @@ ggplot(supermarket_new, aes(x = `Rating`, y = City )) +
 
 md.pattern(supermarket_new, rotate.names = TRUE)
 #wykres, który jeszcze nie wiemy co przedstawia
+
+library(corrplot)
+correlation_matrix <- cor(is.na(supermarket_new), use = "pairwise.complete.obs")
+corrplot(correlation_matrix, method = "square")
+#nie ma współzależności między brakami danych w kolumnach 
