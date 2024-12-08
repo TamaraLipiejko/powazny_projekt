@@ -2,6 +2,8 @@ install.packages("naniar")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("prettydoc")
+install.packages("mice")
+library(mice)
 library(naniar)
 library(dplyr)
 library(ggplot2)
@@ -70,3 +72,7 @@ ggplot(supermarket_new, aes(x = `Rating`, y = City )) +
   geom_point(size = 2, color = "darkorange") +
   theme_minimal()
 #relacja na między rating a city - też paski
+
+md.pattern(supermarket_new)
+#wykres, który jeszcze nie wiemy co przedstawia
+
