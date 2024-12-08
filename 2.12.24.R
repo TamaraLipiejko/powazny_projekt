@@ -3,10 +3,22 @@ install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("prettydoc")
 install.packages("mice")
+install.packages("tidyverse")
+install.packages("dlookr")
+install.packages("editrules") #reguły
+install.packages("VIM")
+install.packages("validate")
+install.packages("editrules")
 library(mice)
 library(naniar)
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
+library(dlookr)
+library(editrules)
+library(VIM)
+library(validate)
+library(editrules)
 
 library(readr)
 supermarket_new <- read_csv("supermarket_new.csv")
@@ -73,6 +85,5 @@ ggplot(supermarket_new, aes(x = `Rating`, y = City )) +
   theme_minimal()
 #relacja na między rating a city - też paski
 
-md.pattern(supermarket_new)
+md.pattern(supermarket_new, rotate.names = TRUE)
 #wykres, który jeszcze nie wiemy co przedstawia
-
