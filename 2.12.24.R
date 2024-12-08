@@ -32,6 +32,16 @@ n_complete(supermarket_new)
 pct_miss(supermarket_new)
 #procent NA = 2,35 %
 
+is.special <- function(x){
+      if (is.numeric(x)) !is.finite(x) else is.na(x)
+}
+sapply(supermarket_new, is.special)
+#Czy dane zawierają inne wartości specjalne? Jeśli tak, zastąp je wartością NA.
+for (n in colnames(supermarket_new)){
+  is.na(supermarket_new[[n]]) <- is.special(supermarket_new[[n]])
+}
+summary(supermarket_new)
+
 miss_var_summary(supermarket_new)
 # tabelka pokazująca w jakich kolumnach mamy NA (gross income - 150, Rating - 150, City - 100)
 
