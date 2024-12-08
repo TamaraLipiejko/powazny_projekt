@@ -86,7 +86,7 @@ ggplot(supermarket_new, aes(x = `Rating`, y = City )) +
 #relacja na między rating a city - też paski
 
 md.pattern(supermarket_new, rotate.names = TRUE)
-#wykres, który jeszcze nie wiemy co przedstawia
+#wykres brakujących danych
 
 library(corrplot)
 correlation_matrix <- cor(is.na(supermarket_new), use = "pairwise.complete.obs")
