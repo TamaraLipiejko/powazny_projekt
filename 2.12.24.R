@@ -27,6 +27,7 @@ library(VIM)
 library(validate)
 library(editrules)
 
+
 library(readr)
 supermarket_new <- read_csv("supermarket_new.csv")
 
@@ -252,7 +253,58 @@ czyste_dane %>%
   )
 
 
+#Wykres słupkowy przedstawiający kupowanie produktów przez klientów Normal vs Member
+czyste_dane %>%
+  group_by(`Customer type`) %>%
+  summarise(Total = n()) %>%  
+  arrange(desc(Total)) %>%
+  ggplot(aes(x = reorder(`Customer type`, Total), y = Total, fill = `Customer type`)) +
+  geom_col(show.legend = FALSE, alpha = 0.85) +
+  coord_flip() +  
+  scale_fill_manual(values = c(
+    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+  )) +  # Różowe odcienie
+  labs(
+    title = "Total by Customer type",
+    subtitle = "Comparison of the total amount spent grouped by customer type",
+    x = "Customer type",
+    y = "Total"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
 
-
+#Wykres przedstawiający ceny za jednostkę według linii produktowej
+czyste_dane %>%
+  group_by(`Product line`) %>%
+  summarise(`Unit price` = n()) %>%  
+  arrange(desc(`Unit price`)) %>%
+  ggplot(aes(x = reorder(`Product line`, `Unit price`), y = `Unit price`, fill = `Product line`)) +
+  geom_col(show.legend = FALSE, alpha = 0.85) +
+  coord_flip() +  
+  scale_fill_manual(values = c(
+    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+  )) +  # Różowe odcienie
+  labs(
+    title = "Unit price by product line",
+    subtitle = "Comparison of unit prices among product lines",
+    x = "Product type",
+    y = "Unit price"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
 
 
