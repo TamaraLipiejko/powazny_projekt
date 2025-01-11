@@ -13,6 +13,8 @@ install.packages("VIM")
 install.packages("validate")
 install.packages("editrules")
 install.packages("errorlocate")
+
+
 library(errorlocate)
 library(mice)
 library(naniar)
@@ -132,3 +134,125 @@ corrplot(correlation_matrix, method = "square")
 
 czyste_dane <- hotdeck(supermarket_new)
 czyste_dane
+
+# Remove all *_imp columns
+czyste_dane <- czyste_dane[, !grepl("_imp$", names(czyste_dane))]
+czyste_dane
+
+
+#WIZUALIZACJA DANYCH
+
+#Wykres pokazujący w którym mieście był największy Total - cena całkowita z podatkiem
+czyste_dane %>%
+  group_by(City) %>%
+  summarise(Total_Sum = sum(Total, na.rm = TRUE)) %>%
+  arrange(desc(Total_Sum)) %>%
+  ggplot(aes(x = reorder(City, Total_Sum), y = Total_Sum, fill = City)) +
+  geom_col(show.legend = FALSE, alpha = 0.85) +
+  coord_flip() +  # Odwrócenie osi dla lepszej czytelności
+  scale_fill_manual(values = c(
+    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+  )) +  # Różowe odcienie
+  labs(
+    title = "Total Sales by City",
+    subtitle = "Comparison of total sales across cities",
+    x = "City",
+    y = "Total Sales (USD)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+
+
+#Wykres pokazujący w którym mieście największa ilość towarów została zakupiona
+czyste_dane %>%
+  group_by(City) %>%
+  summarise(Quantity = n()) %>%  # Liczba miast w każdej grupie
+  arrange(desc(Quantity)) %>%
+  ggplot(aes(x = reorder(City, Quantity), y = Quantity, fill = City)) +
+  geom_col(show.legend = FALSE, alpha = 0.85) +
+  coord_flip() +  # Odwrócenie osi dla lepszej czytelności
+  scale_fill_manual(values = c(
+    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+  )) +  # Różowe odcienie
+  labs(
+    title = "Quantity by City",
+    subtitle = "Comparison of the number of occurrences in each city",
+    x = "City",
+    y = "Quantity"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+
+
+#Wykres Product line purchases by gender
+czyste_dane %>%
+  group_by(Gender, `Product line`) %>%
+  summarise(Quantity = n()) %>%  # Liczba produktów w każdej kategorii i dla każdej płci
+  ggplot(aes(x = `Product line`, y = Quantity, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge", show.legend = TRUE, alpha = 0.85) +  # Słupki obok siebie
+  scale_fill_manual(values = c("#FF99CC", "#66CCFF")) +  # Kolory dla płci
+  labs(
+    title = "Product Line Purchases by Gender",
+    subtitle = "Comparison of product categories purchased by each gender",
+    x = "Product Line",
+    y = "Quantity",
+    fill = "Gender"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Obrócenie etykiet na osi X
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+
+
+#Wykres Total quantity sold by product line
+czyste_dane %>%
+  group_by(`Product line`) %>%
+  summarise(Total_Quantity = sum(Quantity, na.rm = TRUE)) %>%  # Sumowanie liczby sprzedanych sztuk w danej kategorii
+  arrange(desc(Total_Quantity)) %>%  # Sortowanie malejąco po liczbie sprzedanych sztuk
+  ggplot(aes(x = reorder(`Product line`, Total_Quantity), y = Total_Quantity, fill = `Product line`)) +
+  geom_col(show.legend = FALSE, alpha = 0.85) +  # Wykres słupkowy, bez legendy
+  coord_flip() +  # Odwrócenie osi dla lepszej czytelności
+  scale_fill_manual(values = c(
+    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+  )) +  # Kolory dla kategorii
+  labs(
+    title = "Total Quantity Sold by Product Line",
+    subtitle = "Comparison of sales volume across product categories",
+    x = "Product Line",
+    y = "Total Quantity Sold"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+
+
+
+
+
+
