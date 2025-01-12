@@ -308,3 +308,21 @@ czyste_dane %>%
   )
 
 
+#Wykres przedstawiający sprzedaż w każdym sklepie na przestrzeni czasu
+ggplot(czyste_dane, aes(x = Date, y = Total, color = City)) +
+  geom_line(size = 1) +
+  labs(title = "Sprzedaż z podziałem na sklepy na przestrzeni 3 miesięcy",
+       x = "Date",
+       y = "Total",
+       color = "City") +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(color = "blue", size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(color = "blue"),
+    axis.text = element_text(color = "darkblue"),
+    legend.title = element_text(color = "blue"),
+    legend.text = element_text(color = "darkblue"),
+    panel.grid.major = element_line(color = "lightblue"),
+    panel.grid.minor = element_line(color = "lightblue"),
+    panel.background = element_rect(fill = "aliceblue")
+  )
