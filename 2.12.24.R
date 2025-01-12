@@ -13,8 +13,13 @@ install.packages("VIM")
 install.packages("validate")
 install.packages("editrules")
 install.packages("errorlocate")
+install.packages("gtsummary")
+install.packages("cardx")
+install.packages("corrplot")
 
-
+library(corrplot)
+library(cardx)
+library(gtsummary)
 library(errorlocate)
 library(mice)
 library(naniar)
@@ -414,3 +419,75 @@ ggplot(heatmap_rating_city, aes(x = City, y = `Product line`, fill = Avg_Rating)
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 10)
   )
+
+#Statystyki, których nie wiemy czy nie wywalić :)
+# Przetwarzanie kolumny "Date" na format daty
+czyste_dane <- czyste_dane %>%
+  mutate(Date = as.Date(Date, format = "%m/%d/%Y"))
+
+# Tworzenie podsumowania statystycznego
+statystyki <- czyste_dane %>%
+  select(City, Gender, `Customer type`, `Product line`, Total, Rating, Quantity) %>%
+  tbl_summary(
+    by = Gender,  # Podział wyników wg płci
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",  # Średnia i odchylenie standardowe dla danych ciągłych
+      all_categorical() ~ "{n} ({p}%)"    # Liczności i procenty dla zmiennych kategorycznych
+    ),
+    digits = all_continuous() ~ 2,  # Zaokrąglenie dla danych ciągłych
+    label = list(
+      City ~ "City",
+      `Customer type` ~ "Customer Type",
+      `Product line` ~ "Product Line",
+      Total ~ "Total Sales",
+      Rating ~ "Customer Rating",
+      Quantity ~ "Quantity"
+    )
+  ) %>%
+  add_p() %>%  # Dodanie testów istotności statystycznej
+  modify_header(label ~ "**Variable**") %>%
+  bold_labels()
+
+# Wyświetlenie tabeli
+statystyki
+
+#Tabela 1. Rozkład cen jednostkowych wg linii produktów
+czyste_dane %>%
+  select('Unit price', 'Product line') %>%
+  tbl_summary(
+    by = 'Product line',
+    type = all_continuous() ~ "continuous2",
+    statistic = all_continuous() ~ c(
+      "{N_nonmiss}", "{mean}", "{sd}",
+      "{median} ({p25}, {p75})",
+      "{min}, {max}"
+    ),
+    missing = "no",
+    label = 'Unit price' ~ "**Cena jednostkowa**"
+  ) %>%
+  modify_header(label ~ "**Zmienna**") %>%
+  modify_caption("**Tabela 1. Rozkład cen jednostkowych wg linii produktów**") %>%
+  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>%
+  as_gt() %>%
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_column_labels()
+  )
+
+
+#Macierz korelacji
+
+# Wybierz tylko zmienne liczbowe z danych
+numeric_data <- czyste_dane %>%
+  select('Unit price', Quantity, Total, `Tax 5%`)
+
+# Oblicz macierz korelacji
+corr_matrix <- cor(numeric_data, use = "complete.obs")
+
+# Wizualizacja korelacji z wartościami liczbowymi
+corrplot(corr_matrix, method = "number", type = "upper", diag = FALSE, 
+         title = "Macierz korelacji - wartości liczbowe")
+
+# Wizualizacja korelacji w formie kolorowego wykresu
+corrplot(corr_matrix, method = "color", title = "Macierz korelacji - kolory")
+
