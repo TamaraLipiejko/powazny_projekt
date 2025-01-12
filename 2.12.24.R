@@ -326,3 +326,19 @@ ggplot(czyste_dane, aes(x = Date, y = Total, color = City)) +
     panel.grid.minor = element_line(color = "lightblue"),
     panel.background = element_rect(fill = "aliceblue")
   )
+  
+  ggplot(czyste_dane, aes(x = Quantity, y = Total)) +
+    geom_point(aes(color = Total), size = 3, alpha = 0.7) +  # Kolorowanie punktów w zależności od Total
+    scale_color_gradient(low = "pink", high = "darkred") +  # Gradient kolorów od różowego do ciemnoczerwonego
+    labs(
+      title = "Wykres zależności liczby zakupionych produktów vs całkowitej ceny z podatkiem",
+      x = "Liczba zakupionych produktów",
+      y = "Całkowita cena z podatkiem"
+    ) +
+    theme_minimal() +  # Estetyczny, minimalny styl
+    theme(
+      plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+      axis.title = element_text(size = 12),
+      axis.text = element_text(size = 10)
+    )
+  
