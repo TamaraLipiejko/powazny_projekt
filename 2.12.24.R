@@ -342,4 +342,75 @@ ggplot(czyste_dane, aes(x = factor(Quantity), y = Total)) +
     axis.title = element_text(size = 12),
     axis.text = element_text(size = 10)
   )
-  
+#Mapa ciepła: Częstotliwość występowania (Quantity vs Total)
+# Przygotowanie danych do mapy ciepła
+heatmap_data <- czyste_dane %>%
+  mutate(Quantity = factor(Quantity)) %>%  # Konwersja Quantity na factor
+  group_by(Quantity, Total_bin = cut(Total, breaks = seq(0, max(Total), by = 50))) %>%  # Binowanie Total
+  summarise(Frequency = n(), .groups = "drop")  # Liczenie częstotliwości
+
+# Tworzenie mapy ciepła
+ggplot(heatmap_data, aes(x = Quantity, y = Total_bin, fill = Frequency)) +
+  geom_tile(color = "white") +  # Białe linie oddzielające komórki
+  scale_fill_gradient(low = "lightblue", high = "darkblue", name = "Częstotliwość") +  # Gradient kolorów
+  labs(
+    title = "Mapa ciepła: Częstotliwość występowania (Quantity vs Total)",
+    x = "Liczba zakupionych produktów",
+    y = "Całkowita cena z podatkiem (przedziały)"
+  ) +
+  theme_minimal() +  # Minimalny styl
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+# Heatmap: Średnia ocena klientów według oddziału i kategorii produktów
+# Grupowanie danych:
+heatmap_rating <- czyste_dane %>%
+  group_by(Branch, `Product line`) %>%
+  summarise(Avg_Rating = mean(Rating, na.rm = TRUE), .groups = "drop")  # Średnia ocena klientów
+
+# Tworzenie heatmapy
+ggplot(heatmap_rating, aes(x = Branch, y = `Product line`, fill = Avg_Rating)) +
+  geom_tile(color = "white") +  # Białe linie oddzielające komórki
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen", name = "Średnia ocena") +  # Gradient od jasnej do ciemnej zieleni
+  labs(
+    title = "Średnia ocena klientów w zależności od oddziału i kategorii produktów",
+    x = "Oddział",
+    y = "Kategoria produktów"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+# Heatmap: Średnia ocena klientów według miasta i kategorii produktów
+# Grupowanie danych:
+heatmap_rating_city <- czyste_dane %>%
+  group_by(City, `Product line`) %>%
+  summarise(Avg_Rating = mean(Rating, na.rm = TRUE), .groups = "drop")  # Średnia ocena klientów
+
+# Tworzenie heatmapy
+ggplot(heatmap_rating_city, aes(x = City, y = `Product line`, fill = Avg_Rating)) +
+  geom_tile(color = "white") +  # Białe linie oddzielające komórki
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen", name = "Średnia ocena") +  # Gradient od jasnej do ciemnej zieleni
+  labs(
+    title = "Średnia ocena klientów w zależności od miasta i kategorii produktów",
+    x = "Miasto",
+    y = "Kategoria produktów"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
