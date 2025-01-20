@@ -157,8 +157,8 @@ czyste_dane %>%
   geom_col(show.legend = FALSE, alpha = 0.85) +
   coord_flip() +  # Odwrócenie osi dla lepszej czytelności
   scale_fill_manual(values = c(
-    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
-  )) +  # Różowe odcienie
+    "olivedrab", "palevioletred2", "moccasin", "olivedrab", "lightcoral", "navajowhite"
+  )) +  # Ładniejsze, jaśniejsze odcienie
   labs(
     title = "Total Sales by City",
     subtitle = "Comparison of total sales across cities",
@@ -167,13 +167,14 @@ czyste_dane %>%
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "lightcoral"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
     axis.title.x = element_text(size = 14, face = "bold"),
     axis.title.y = element_text(size = 14, face = "bold"),
     axis.text = element_text(size = 12, color = "gray30"),
     panel.grid.major = element_line(color = "gray90", linetype = "dotted")
   )
+
 
 
 #Wykres pokazujący w którym mieście największa ilość towarów została zakupiona
@@ -185,7 +186,7 @@ czyste_dane %>%
   geom_col(show.legend = FALSE, alpha = 0.85) +
   coord_flip() +  # Odwrócenie osi dla lepszej czytelności
   scale_fill_manual(values = c(
-    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
+    "olivedrab", "palevioletred2", "moccasin", "olivedrab", "lightcoral", "navajowhite"
   )) +  # Różowe odcienie
   labs(
     title = "Quantity by City",
@@ -195,7 +196,7 @@ czyste_dane %>%
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "lightcoral"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
     axis.title.x = element_text(size = 14, face = "bold"),
     axis.title.y = element_text(size = 14, face = "bold"),
@@ -207,135 +208,158 @@ czyste_dane %>%
 #Wykres Product line purchases by gender
 czyste_dane %>%
   group_by(Gender, `Product line`) %>%
-  summarise(Quantity = n()) %>%  # Liczba produktów w każdej kategorii i dla każdej płci
-  ggplot(aes(x = `Product line`, y = Quantity, fill = Gender)) +
-  geom_bar(stat = "identity", position = "dodge", show.legend = TRUE, alpha = 0.85) +  # Słupki obok siebie
-  scale_fill_manual(values = c("#FF99CC", "#66CCFF")) +  # Kolory dla płci
+  summarise(Quantity = n()) %>%
+  mutate(Percentage = Quantity / sum(Quantity) * 100) %>%  # Obliczenie procentowego udziału
+  ggplot(aes(x = `Product line`, y = Percentage, fill = Gender)) +
+  geom_bar(stat = "identity", position = "fill", alpha = 0.85) +  # Procentowy wykres skumulowany
+  scale_fill_manual(values = c("lightcoral", "steelblue2")) +  # Kolory dla płci
   labs(
     title = "Product Line Purchases by Gender",
-    subtitle = "Comparison of product categories purchased by each gender",
+    subtitle = "Percentage distribution of product purchases by gender",
     x = "Product Line",
-    y = "Quantity",
+    y = "Percentage",
     fill = "Gender"
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "steelblue"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
     axis.title.x = element_text(size = 14, face = "bold"),
     axis.title.y = element_text(size = 14, face = "bold"),
     axis.text = element_text(size = 12, color = "gray30"),
-    axis.text.x = element_text(angle = 45, hjust = 1),  # Obrócenie etykiet na osi X
+    axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid.major = element_line(color = "gray90", linetype = "dotted")
   )
+
 
 
 #Wykres Total quantity sold by product line
 czyste_dane %>%
   group_by(`Product line`) %>%
-  summarise(Total_Quantity = sum(Quantity, na.rm = TRUE)) %>%  # Sumowanie liczby sprzedanych sztuk w danej kategorii
-  arrange(desc(Total_Quantity)) %>%  # Sortowanie malejąco po liczbie sprzedanych sztuk
-  ggplot(aes(x = reorder(`Product line`, Total_Quantity), y = Total_Quantity, fill = `Product line`)) +
-  geom_col(show.legend = FALSE, alpha = 0.85) +  # Wykres słupkowy, bez legendy
-  coord_flip() +  # Odwrócenie osi dla lepszej czytelności
-  scale_fill_manual(values = c(
-    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
-  )) +  # Kolory dla kategorii
+  summarise(Total_Quantity = sum(Quantity, na.rm = TRUE)) %>%
+  mutate(Percentage = Total_Quantity / sum(Total_Quantity) * 100, 
+         label = paste0(round(Percentage, 1), "%")) %>%  # Dodanie etykiety z procentem
+  ggplot(aes(x = 2, y = Percentage, fill = `Product line`)) +
+  geom_bar(stat = "identity", width = 1, alpha = 0.85) +
+  coord_polar("y", start = 0) +
+  xlim(0.5, 2.5) +  # Dodanie przestrzeni na "wycięcie" dla wykresu pierścieniowego
+  scale_fill_manual(values = c("olivedrab", "palevioletred2", "moccasin", "lightcoral", "steelblue2", "goldenrod1")) +
   labs(
     title = "Total Quantity Sold by Product Line",
-    subtitle = "Comparison of sales volume across product categories",
-    x = "Product Line",
-    y = "Total Quantity Sold"
+    subtitle = "Proportional representation of sales across product lines",
+    fill = "Product Line"
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "steelblue"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
-    axis.title.x = element_text(size = 14, face = "bold"),
-    axis.title.y = element_text(size = 14, face = "bold"),
-    axis.text = element_text(size = 12, color = "gray30"),
-    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
-  )
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.position = "right"
+  ) +
+  # Dodanie tekstów z procentami obok każdego segmentu wykresu
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "white", size = 5)
 
 
 #Wykres słupkowy przedstawiający kupowanie produktów przez klientów Normal vs Member
 czyste_dane %>%
   group_by(`Customer type`) %>%
-  summarise(Total = n()) %>%  
-  arrange(desc(Total)) %>%
-  ggplot(aes(x = reorder(`Customer type`, Total), y = Total, fill = `Customer type`)) +
-  geom_col(show.legend = FALSE, alpha = 0.85) +
-  coord_flip() +  
-  scale_fill_manual(values = c(
-    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
-  )) +  # Różowe odcienie
+  summarise(Total = n()) %>%  # Liczba zamówień dla każdego typu klienta
+  mutate(Percentage = Total / sum(Total) * 100, 
+         label = paste0(round(Percentage, 1), "%")) %>%  # Dodanie etykiety z procentem
+  ggplot(aes(x = 2, y = Percentage, fill = `Customer type`)) +
+  geom_bar(stat = "identity", width = 1, alpha = 0.85) +
+  coord_polar("y", start = 0) +
+  xlim(0.5, 2.5) +  # Dodanie przestrzeni na "wycięcie" dla wykresu pierścieniowego
+  scale_fill_manual(values = c("olivedrab", "palevioletred2")) +  # Kolory dla typów klientów
   labs(
-    title = "Total by Customer type",
-    subtitle = "Comparison of the total amount spent grouped by customer type",
-    x = "Customer type",
-    y = "Total"
+    title = "Total by Customer Type",
+    subtitle = "Proportional representation of total purchases by customer type",
+    fill = "Customer Type"
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "steelblue"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
-    axis.title.x = element_text(size = 14, face = "bold"),
-    axis.title.y = element_text(size = 14, face = "bold"),
-    axis.text = element_text(size = 12, color = "gray30"),
-    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
-  )
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    legend.position = "right"
+  ) +
+  # Dodanie tekstów z procentami obok każdego segmentu wykresu
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "white", size = 5)
+
+
+
 
 #Wykres przedstawiający ceny za jednostkę według linii produktowej
 czyste_dane %>%
-  group_by(`Product line`) %>%
-  summarise(`Unit price` = n()) %>%  
-  arrange(desc(`Unit price`)) %>%
-  ggplot(aes(x = reorder(`Product line`, `Unit price`), y = `Unit price`, fill = `Product line`)) +
-  geom_col(show.legend = FALSE, alpha = 0.85) +
-  coord_flip() +  
+  ggplot(aes(x = `Product line`, y = `Unit price`, fill = `Product line`)) +
+  geom_boxplot(show.legend = FALSE, alpha = 0.85) +  # Wykres pudełkowy
   scale_fill_manual(values = c(
-    "#FF99CC", "#FF6699", "#FFB6C1", "#FF85A1", "#F08080", "#FFC0CB"
-  )) +  # Różowe odcienie
+    "olivedrab", "palevioletred2", "moccasin", "lightcoral", "steelblue2", "goldenrod1"
+  )) +  # Kolory
   labs(
-    title = "Unit price by product line",
+    title = "Unit Price Distribution by Product Line",
     subtitle = "Comparison of unit prices among product lines",
-    x = "Product type",
-    y = "Unit price"
+    x = "Product Line",
+    y = "Unit Price (USD)"
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#FF007F"),
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "steelblue"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
     axis.title.x = element_text(size = 14, face = "bold"),
     axis.title.y = element_text(size = 14, face = "bold"),
     axis.text = element_text(size = 12, color = "gray30"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid.major = element_line(color = "gray90", linetype = "dotted")
   )
 
 
+
 #Wykres przedstawiający sprzedaż w każdym sklepie na przestrzeni czasu
+
+
+# Przetwarzanie kolumny "Date" na format daty
+czyste_dane <- czyste_dane %>%
+  mutate(Date = as.Date(Date, format = "%m/%d/%Y"))  # Dopasuj format, jeśli jest inny niż %m/%d/%Y
+
+# Sprawdzenie, czy kolumna 'Date' została poprawnie przekształcona
+head(czyste_dane$Date)
+
+# Jeśli kolumna Date jest teraz w formacie daty, możesz stworzyć wykres
 ggplot(czyste_dane, aes(x = Date, y = Total, color = City)) +
   geom_line(size = 1) +
-  labs(title = "Sprzedaż z podziałem na sklepy na przestrzeni 3 miesięcy",
-       x = "Date",
-       y = "Total",
-       color = "City") +
+  labs(
+    title = "Sprzedaż z podziałem na sklepy na przestrzeni 3 miesięcy",
+    x = "Data",
+    y = "Całkowita sprzedaż",
+    color = "Miasto"
+  ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(color = "blue", size = 16, face = "bold", hjust = 0.5),
-    axis.title = element_text(color = "blue"),
-    axis.text = element_text(color = "darkblue"),
-    legend.title = element_text(color = "blue"),
-    legend.text = element_text(color = "darkblue"),
-    panel.grid.major = element_line(color = "lightblue"),
-    panel.grid.minor = element_line(color = "lightblue"),
-    panel.background = element_rect(fill = "aliceblue")
-  )
+    plot.title = element_text(color = "darkblue", size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(color = "darkblue", size = 14),
+    axis.text = element_text(color = "black", size = 12),
+    legend.title = element_text(color = "darkblue", size = 12),
+    legend.text = element_text(color = "darkblue", size = 12),
+    panel.grid.major = element_line(color = "lightgray", linetype = "dotted"),
+    panel.grid.minor = element_line(color = "lightgray", linetype = "dotted"),
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "lightblue"),
+    legend.position = "top"
+  ) +
+  scale_x_date(date_labels = "%b %d", date_breaks = "1 week") +
+  facet_wrap(~City)
+
+
 
 # Wykres zależności liczby zakupionych produktów vs całkowitej ceny z podatkiem 
 
 ggplot(czyste_dane, aes(x = factor(Quantity), y = Total)) +
-  geom_boxplot(color = "darkblue", fill = "lightblue", alpha = 0.7) +  # Tworzenie boxplotu
+  geom_boxplot(color = "lightgreen", fill = "darkgreen", alpha = 0.7) +  # Tworzenie boxplotu
   labs(
     title = "Wykres zależności liczby zakupionych produktów vs całkowitej ceny z podatkiem",
     x = "Liczba zakupionych produktów",
@@ -357,7 +381,7 @@ heatmap_data <- czyste_dane %>%
 # Tworzenie mapy ciepła
 ggplot(heatmap_data, aes(x = Quantity, y = Total_bin, fill = Frequency)) +
   geom_tile(color = "white") +  # Białe linie oddzielające komórki
-  scale_fill_gradient(low = "lightblue", high = "darkblue", name = "Częstotliwość") +  # Gradient kolorów
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen", name = "Częstotliwość") +  # Gradient kolorów
   labs(
     title = "Mapa ciepła: Częstotliwość występowania (Quantity vs Total)",
     x = "Liczba zakupionych produktów",
