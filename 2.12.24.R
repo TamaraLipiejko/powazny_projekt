@@ -155,18 +155,19 @@ czyste_dane %>%
   arrange(desc(Total_Sum)) %>%
   mutate(Percentage = Total_Sum / sum(Total_Sum) * 100) %>%  # Obliczenie procentów
   ggplot(aes(x = "", y = Total_Sum, fill = City, label = paste0(round(Percentage, 1), "%"))) + 
-  geom_bar(stat = "identity", width = 1, show.legend = FALSE, alpha = 0.85) +
+  geom_bar(stat = "identity", width = 1, show.legend = TRUE, alpha = 0.85) +
   coord_polar("y") +  # Tworzenie wykresu kołowego
   scale_fill_manual(values = c(
     "olivedrab", "palevioletred2", "moccasin", "olivedrab", "lightcoral", "navajowhite"
   )) +  # Kolory dla miast
   geom_text(position = position_stack(vjust = 0.5), color = "white", size = 5) +  # Dodanie procentów na wykresie
   labs(
-    title = "Total Sales by City",
+    title = "Total Sales (in thousands) by City",
     subtitle = "Comparison of total sales across cities",
     x = NULL,
     y = "Total Sales (USD)"
   ) +
+  scale_y_continuous(labels = function(x) x / 1000, name = "Total Sales (in thousands)")+
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "lightcoral"),
