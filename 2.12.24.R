@@ -153,28 +153,29 @@ czyste_dane %>%
   group_by(City) %>%
   summarise(Total_Sum = sum(Total, na.rm = TRUE)) %>%
   arrange(desc(Total_Sum)) %>%
-  ggplot(aes(x = reorder(City, Total_Sum), y = Total_Sum, fill = City)) +
-  geom_col(show.legend = FALSE, alpha = 0.85) +
-  coord_flip() +  # Odwrócenie osi dla lepszej czytelności
+  mutate(Percentage = Total_Sum / sum(Total_Sum) * 100) %>%  # Obliczenie procentów
+  ggplot(aes(x = "", y = Total_Sum, fill = City, label = paste0(round(Percentage, 1), "%"))) + 
+  geom_bar(stat = "identity", width = 1, show.legend = FALSE, alpha = 0.85) +
+  coord_polar("y") +  # Tworzenie wykresu kołowego
   scale_fill_manual(values = c(
     "olivedrab", "palevioletred2", "moccasin", "olivedrab", "lightcoral", "navajowhite"
-  )) +  # Ładniejsze, jaśniejsze odcienie
+  )) +  # Kolory dla miast
+  geom_text(position = position_stack(vjust = 0.5), color = "white", size = 5) +  # Dodanie procentów na wykresie
   labs(
     title = "Total Sales by City",
     subtitle = "Comparison of total sales across cities",
-    x = "City",
+    x = NULL,
     y = "Total Sales (USD)"
   ) +
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "lightcoral"),
     plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
-    axis.title.x = element_text(size = 14, face = "bold"),
-    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(size = 14, face = "bold", color = "gray30"),
     axis.text = element_text(size = 12, color = "gray30"),
     panel.grid.major = element_line(color = "gray90", linetype = "dotted")
   )
-
 
 
 #Wykres pokazujący w którym mieście największa ilość towarów została zakupiona
@@ -262,7 +263,7 @@ czyste_dane %>%
   geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "white", size = 5)
 
 
-#Wykres słupkowy przedstawiający kupowanie produktów przez klientów Normal vs Member
+#Wykres przedstawiający kupowanie produktów przez klientów Normal vs Member
 czyste_dane %>%
   group_by(`Customer type`) %>%
   summarise(Total = n()) %>%  # Liczba zamówień dla każdego typu klienta
@@ -318,10 +319,6 @@ czyste_dane %>%
   )
 
 
-
-#Wykres przedstawiający sprzedaż w każdym sklepie na przestrzeni czasu
-
-
 # Przetwarzanie kolumny "Date" na format daty
 czyste_dane <- czyste_dane %>%
   mutate(Date = as.Date(Date, format = "%m/%d/%Y"))  # Dopasuj format, jeśli jest inny niż %m/%d/%Y
@@ -329,16 +326,16 @@ czyste_dane <- czyste_dane %>%
 # Sprawdzenie, czy kolumna 'Date' została poprawnie przekształcona
 head(czyste_dane$Date)
 
-# Jeśli kolumna Date jest teraz w formacie daty, możesz stworzyć wykres
+#Wyres: Sprzedaż z podziałęm na sklepy na przestrzeni 3 miesięcy
 ggplot(czyste_dane, aes(x = Date, y = Total, color = City)) +
-  geom_line(size = 1) +
+  geom_line(size = 1) +  # Dodanie linii na wykresie
   labs(
     title = "Sprzedaż z podziałem na sklepy na przestrzeni 3 miesięcy",
     x = "Data",
     y = "Całkowita sprzedaż",
     color = "Miasto"
   ) +
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 14) +  # Użycie minimalnej tematyki
   theme(
     plot.title = element_text(color = "darkblue", size = 16, face = "bold", hjust = 0.5),
     axis.title = element_text(color = "darkblue", size = 14),
@@ -349,11 +346,14 @@ ggplot(czyste_dane, aes(x = Date, y = Total, color = City)) +
     panel.grid.minor = element_line(color = "lightgray", linetype = "dotted"),
     panel.background = element_rect(fill = "white"),
     plot.background = element_rect(fill = "lightblue"),
-    legend.position = "top"
+    legend.position = "top",
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Pochylenie tekstu na osi X (dat)
   ) +
-  scale_x_date(date_labels = "%b %d", date_breaks = "1 week") +
-  facet_wrap(~City)
-
+  scale_x_date(
+    date_labels = "%b %d",  # Format daty na osi X (np. Jan 01)
+    date_breaks = "10 days"  # Słupki co 10 dni
+  ) +
+  facet_wrap(~City)  # Facetowanie wykresu na poszczególne miasta
 
 
 # Wykres zależności liczby zakupionych produktów vs całkowitej ceny z podatkiem 
@@ -371,6 +371,7 @@ ggplot(czyste_dane, aes(x = factor(Quantity), y = Total)) +
     axis.title = element_text(size = 12),
     axis.text = element_text(size = 10)
   )
+
 #Mapa ciepła: Częstotliwość występowania (Quantity vs Total)
 # Przygotowanie danych do mapy ciepła
 heatmap_data <- czyste_dane %>%
