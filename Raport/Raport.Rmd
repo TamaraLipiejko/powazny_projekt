@@ -15,4 +15,46 @@ output:
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
-## Introduction
+## Wstęp
+
+Obiektem analizy był zbiór danych, będący jedną z historycznych sprzedaży firmy supermarketów Biedronka, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące, od stycznia 2019 r. do marca 2019 r.
+
+Dane jakie zostały zebrane są następujące
+
+-   Invoice id - Numer identyfikacyjny faktury sprzedaży wygenerowany komputerowo
+
+-   Branch - Oddział supercentrum
+
+-   City - Lokalizacja supercentrów
+
+-   Customer type - Typ klientów, zarejestrowany przez członków dla klientów korzystających z karty członkowskiej i normalny dla klientów bez karty członkowskiej
+
+-   Gender - Płeć klienta
+
+-   Product line - Ogólne grupy kategoryzacji przedmiotów - akcesoria elektroniczne, akcesoria modowe, żywność i napoje, zdrowie i uroda, dom i styl życia, sport i podróże
+
+-   Unit price - Cena każdego produktu w \$
+
+-   Quantity - Liczba produktów zakupionych przez klienta
+
+-   Tax - Opłata podatkowa w wysokości 5% dla klienta dokonującego zakupu
+
+-   Date - Data zakupu
+
+-   Time - Czas zakupu
+
+-   Payment - Sposób płatności klienta - gotówka, karta kredytowa i portfel elektroniczny
+
+-   COGS - Koszt sprzedawanych towarów
+
+-   Gross margin percentage - Procentowa marża brutto
+
+-   Gross income - Dochód brutto
+
+-   Rating - Ocena satysfakcji klientów dotycząca ich ogólnego doświadczenia zakupowego
+
+## Analiza
+
+### Etap 1 - Przygotowanie danych
+
+## Wnioski
