@@ -500,6 +500,56 @@ czyste_dane %>%
     locations = gt::cells_column_labels()
   )
 
+install.packages("ggstatsplot")
+library(ggstatsplot)
+library(dplyr)
+
+
+library(ggstatsplot)
+library(dplyr)
+
+# Rozkład cen jednostkowych w zależności od produktu
+czyste_dane %>%
+  ggbetweenstats(
+    x = `Product line`,   
+    y = `Unit price`,     
+    type = "parametric",  
+    pairwise.comparisons = TRUE,  
+    centrality.tendency = "mean",  # Średnia jako miara tendencji centralnej
+    centrality.difficulty = "median",  # Mediana jako alternatywa
+    p.adjust.method = "bonferroni",  # Korekta p wartości
+    ggtheme = theme_minimal(),  
+    title = "Rozkład cen jednostkowych w zależności od linii produktów"  # Tytuł wykresu
+  )
+
+#Porównanie cen jednostkowych w zależności od typu klienta
+czyste_dane %>%
+  ggbetweenstats(
+    x = `Customer type`,    
+    y = `Unit price`,       
+    type = "parametric",    
+    pairwise.comparisons = TRUE,  
+    centrality.tendency = "mean",  # Średnia
+    centrality.difficulty = "median",  # Mediana
+    p.adjust.method = "bonferroni",  # Korekta wartości p
+    ggtheme = theme_minimal(),
+    title = "Porównanie cen jednostkowych w zależności od typu klienta"  # Tytuł wykresu
+  )
+
+#Rozkłąd ilości produktów w zależności od metody płatności
+czyste_dane %>%
+  ggbetweenstats(
+    x = `Payment`,           
+    y = `Quantity`,          
+    type = "parametric",     
+    pairwise.comparisons = TRUE,  
+    centrality.tendency = "mean",  # Średnia
+    centrality.difficulty = "median",  # Mediana
+    p.adjust.method = "bonferroni",  # Korekta p wartości
+    ggtheme = theme_minimal(),  
+    title = "Rozkład ilości produktów w zależności od metody płatności"  # Tytuł wykresu
+  )
+
 
 #Macierz korelacji
 
