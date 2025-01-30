@@ -81,6 +81,8 @@ library(validate)
 library(corrplot)
 library(gtsummary)
 library(ggstatsplot)
+library(errorlocate)
+library(VIM)
 ```
 
 ### Wczytanie danych
@@ -125,6 +127,12 @@ rules <- validator(
 # Zastosowanie reguł
 validation_results <- confront(supermarket_new, rules)
 summary(validation_results)
+
+czyste_dane <-
+  supermarket_new %>%
+  replace_errors(rules)
+
+errors_removed(czyste_dane)
 ```
 
 ---
@@ -154,6 +162,15 @@ ggplot(supermarket_new, aes(x = `gross income`, y = Rating)) +
 ggplot(supermarket_new, aes(x = Rating, y = City)) +
   geom_point(color = "darkorange", size = 2) +
   theme_minimal()
+```
+
+
+```{r clean data}
+czyste_dane <- hotdeck(supermarket_new)
+
+# Remove all *_imp columns
+czyste_dane <- czyste_dane[, !grepl("_imp$", names(czyste_dane))]
+
 ```
 
 ### Wykresy podsumowujące sprzedaż
