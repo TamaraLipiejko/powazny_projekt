@@ -19,7 +19,6 @@ knitr::opts_chunk$set(cache = TRUE)
 
 Celem tego raportu jest analiza zestawu danych, w tym czyszczenie danych, wizualizacja, analiza opisowa oraz wnioskowanie statystyczne.
 
-\
 Obiektem analizy był zbiór danych, będący jedną z historycznych sprzedaży firmy supermarketów Biedronka, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące, od stycznia 2019 r. do marca 2019 r.
 
 Dane jakie zostały zebrane są następujące
@@ -93,9 +92,13 @@ supermarket_new <- read_csv("supermarket_new.csv")
 summary(supermarket_new)
 ```
 
+Dane zawierają informacje o sprzedaży, takie jak lokalizacja sklepów, ceny jednostkowe, ilości zakupionych produktów, rodzaj płatności i oceny klientów.
+
 ### Czyszczenie danych
 
 #### Sprawdzenie braków danych
+
+Braki danych mogą wskazywać na problemy w procesie zbierania informacji. Sprawdzamy, które zmienne są najbardziej narażone na niekompletność.
 
 ```{r missing-values, echo=TRUE, message=FALSE, warning=FALSE}
 # Liczba braków danych
@@ -105,6 +108,8 @@ miss_var_summary(supermarket_new)
 ```
 
 #### Usuwanie wartości specjalnych i zastosowanie reguł walidacji
+
+Reguły walidacji pomagają w wykrywaniu i eliminowaniu błędnych wartości, co poprawia jakość analizowanych danych.
 
 ```{r data-cleaning, echo=TRUE, message=FALSE, warning=FALSE}
 is.special <- function(x) {
@@ -138,6 +143,8 @@ errors_removed(czyste_dane)
 
 ### Braki danych
 
+Wykrezy wizualizujące braki danych pomagają określić, które zmienne najczęściej zawierają braki.
+
 ```{r visualize-missing-data, echo=TRUE, message=FALSE, warning=FALSE}
 # Mapa braków danych
 vis_miss(supermarket_new)
@@ -148,6 +155,8 @@ gg_miss_upset(supermarket_new, nsets = 3)
 ```
 
 ### Wykresy zależności
+
+Analiza pokazuje, czy oceny klientów mają związek z dochodem brutto oraz czy różnią się w zależności od lokalizacji sklepu.
 
 ```{r scatter-plots, echo=TRUE, message=FALSE, warning=FALSE}
 # Zależność między Rating a Gross Income
@@ -195,6 +204,8 @@ czyste_dane %>%
 
 ### Statystyki opisowe dla wybranych zmiennych
 
+Statystyki opisowe dostarczają podstawowych informacji o rozkładzie zmiennych w zależności od płci klientów.
+
 ```{r descriptive-statistics, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
   select(City, Gender, `Customer type`, `Product line`, Total, Rating, Quantity) %>%
@@ -204,6 +215,8 @@ czyste_dane %>%
 ```
 
 ### Macierz korelacji
+
+Macierz korelacji pozwala określić, jakie zależności występują między zmiennymi numerycznymi.
 
 ```{r correlation-matrix, echo=TRUE, message=FALSE, warning=FALSE}
 # Obliczanie korelacji
@@ -220,6 +233,8 @@ corrplot(corr_matrix, method = "color")
 
 ### Porównanie cen jednostkowych między liniami produktów
 
+Analiza pokazuje, które linie porduktów różnią się istotnie pod względem ceny jednostkowej.
+
 ```{r unit-price-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
   ggbetweenstats(
@@ -232,6 +247,8 @@ czyste_dane %>%
 ```
 
 ### Porównanie cen jednostkowych według typu klienta
+
+Analiza pokazuje, które typy klientów różnią się istotnie pod względem ceny jednostkowej.
 
 ```{r customer-type-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
@@ -248,11 +265,12 @@ czyste_dane %>%
 
 ## Podsumowanie i Wnioski
 
-W analizie danych supermarketu odkryto kilka istotnych zależności:
+Na podstawie analizy danych supermarketu można wyciągnąć następujące wnioski:
 
--   Cena jednostkowa różniła się istotnie w zależności od linii produktów.
--   Sprzedaż Total była zróżnicowana między miastami oraz typami klientów.
--   Braki danych były obecne w kilku kolumnach, lecz zostały skutecznie zarządzone.
+-   Cena jednostkowa istotnie różni się pomiędzy różnymi liniami produktów.
+-   Sprzedaż Total wykazuje różnice w zależności od miasta oraz rodzaju klientów.
+-   Niektóre zmienne posiadały braki danych, jednak zostały one skutecznie zarządzone poprzez imputację.
+-   Korelacja między zmiennymi pozwala lepiej zrozumieć, jakie czynniki wpływają na poziom sprzedaży i satysfakcję klientów.
 
 Szczegółowe wykresy i tabele wspomagają wizualizację tych wyników.
 
