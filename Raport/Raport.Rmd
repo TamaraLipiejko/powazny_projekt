@@ -17,6 +17,9 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ## Wprowadzenie
 
+Celem tego raportu jest analiza zestawu danych, w tym czyszczenie danych, wizualizacja, analiza opisowa oraz wnioskowanie statystyczne.
+
+\
 Obiektem analizy był zbiór danych, będący jedną z historycznych sprzedaży firmy supermarketów Biedronka, która została zarejestrowana w 3 różnych oddziałach przez 3 miesiące, od stycznia 2019 r. do marca 2019 r.
 
 Dane jakie zostały zebrane są następujące
@@ -53,17 +56,11 @@ Dane jakie zostały zebrane są następujące
 
 -   Rating - Ocena satysfakcji klientów dotycząca ich ogólnego doświadczenia zakupowego
 
-## Wprowadzenie
-
-Celem tego raportu jest analiza danych z supermarketu, w tym czyszczenie danych, wizualizacja, analiza opisowa oraz wnioskowanie statystyczne. Dane zawierają informacje o sprzedaży, w tym ceny, ilości produktów, oceny klientów, a także dane demograficzne klientów.
-
----
-
 ## Data Cleansing i Wrangling
 
 ### Załadowanie danych i pakietów
 
-```{r load-packages}
+```{r load-packages, echo=TRUE, message=FALSE, warning=FALSE}
 # Instalacja pakietów (jeśli nie są zainstalowane)
 required_packages <- c(
   "naniar", "dplyr", "ggplot2", "prettydoc", "mice", "shape", "jomo", "pan", "tidyverse", "dlookr", "editrules", "VIM", "validate", "errorlocate", "gtsummary", "cardx", "corrplot", "ggstatsplot"
@@ -87,7 +84,7 @@ library(VIM)
 
 ### Wczytanie danych
 
-```{r read-data}
+```{r read-data, echo=TRUE, message=FALSE, warning=FALSE}
 # Wczytanie danych
 library(readr)
 supermarket_new <- read_csv("supermarket_new.csv")
@@ -100,7 +97,7 @@ summary(supermarket_new)
 
 #### Sprawdzenie braków danych
 
-```{r missing-values}
+```{r missing-values, echo=TRUE, message=FALSE, warning=FALSE}
 # Liczba braków danych
 n_miss(supermarket_new)
 pct_miss(supermarket_new)
@@ -109,7 +106,7 @@ miss_var_summary(supermarket_new)
 
 #### Usuwanie wartości specjalnych i zastosowanie reguł walidacji
 
-```{r data-cleaning}
+```{r data-cleaning, echo=TRUE, message=FALSE, warning=FALSE}
 is.special <- function(x) {
   if (is.numeric(x)) !is.finite(x) else is.na(x)
 }
@@ -135,13 +132,13 @@ czyste_dane <-
 errors_removed(czyste_dane)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Wizualizacja Danych
 
 ### Braki danych
 
-```{r visualize-missing-data}
+```{r visualize-missing-data, echo=TRUE, message=FALSE, warning=FALSE}
 # Mapa braków danych
 vis_miss(supermarket_new)
 
@@ -152,7 +149,7 @@ gg_miss_upset(supermarket_new, nsets = 3)
 
 ### Wykresy zależności
 
-```{r scatter-plots}
+```{r scatter-plots, echo=TRUE, message=FALSE, warning=FALSE}
 # Zależność między Rating a Gross Income
 ggplot(supermarket_new, aes(x = `gross income`, y = Rating)) +
   geom_point(aes(color = City), size = 2) +
@@ -164,8 +161,7 @@ ggplot(supermarket_new, aes(x = Rating, y = City)) +
   theme_minimal()
 ```
 
-
-```{r clean data}
+```{r clean data, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane <- hotdeck(supermarket_new)
 
 # Remove all *_imp columns
@@ -175,7 +171,7 @@ czyste_dane <- czyste_dane[, !grepl("_imp$", names(czyste_dane))]
 
 ### Wykresy podsumowujące sprzedaż
 
-```{r summary-plots}
+```{r summary-plots, echo=TRUE, message=FALSE, warning=FALSE}
 # Sprzedaż Total według miasta
 czyste_dane %>%
   group_by(City) %>%
@@ -193,13 +189,13 @@ czyste_dane %>%
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
 ## Analiza Opisowa
 
 ### Statystyki opisowe dla wybranych zmiennych
 
-```{r descriptive-statistics}
+```{r descriptive-statistics, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
   select(City, Gender, `Customer type`, `Product line`, Total, Rating, Quantity) %>%
   tbl_summary(by = Gender) %>%
@@ -209,7 +205,7 @@ czyste_dane %>%
 
 ### Macierz korelacji
 
-```{r correlation-matrix}
+```{r correlation-matrix, echo=TRUE, message=FALSE, warning=FALSE}
 # Obliczanie korelacji
 numeric_data <- czyste_dane %>% select(`Unit price`, Quantity, Total, `Tax 5%`)
 corr_matrix <- cor(numeric_data, use = "complete.obs")
@@ -218,13 +214,13 @@ corr_matrix <- cor(numeric_data, use = "complete.obs")
 corrplot(corr_matrix, method = "color")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Wnioskowanie Statystyczne
 
 ### Porównanie cen jednostkowych między liniami produktów
 
-```{r unit-price-comparison}
+```{r unit-price-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
   ggbetweenstats(
     x = `Product line`,
@@ -237,7 +233,7 @@ czyste_dane %>%
 
 ### Porównanie cen jednostkowych według typu klienta
 
-```{r customer-type-comparison}
+```{r customer-type-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
   ggbetweenstats(
     x = `Customer type`,
@@ -248,16 +244,16 @@ czyste_dane %>%
   )
 ```
 
----
+------------------------------------------------------------------------
 
 ## Podsumowanie i Wnioski
 
 W analizie danych supermarketu odkryto kilka istotnych zależności:
 
-- Cena jednostkowa różniła się istotnie w zależności od linii produktów.
-- Sprzedaż Total była zróżnicowana między miastami oraz typami klientów.
-- Braki danych były obecne w kilku kolumnach, lecz zostały skutecznie zarządzone.
+-   Cena jednostkowa różniła się istotnie w zależności od linii produktów.
+-   Sprzedaż Total była zróżnicowana między miastami oraz typami klientów.
+-   Braki danych były obecne w kilku kolumnach, lecz zostały skutecznie zarządzone.
 
 Szczegółowe wykresy i tabele wspomagają wizualizację tych wyników.
 
----
+------------------------------------------------------------------------
