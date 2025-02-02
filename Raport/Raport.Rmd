@@ -57,9 +57,8 @@ Dane jakie zostały zebrane są następujące
 
 ## Data Cleansing i Wrangling
 
-### Załadowanie danych i pakietów
 
-```{r load-packages, echo=TRUE, message=FALSE, warning=FALSE}
+```{r load-packages, echo=FALSE, message=FALSE, warning=FALSE}
 # Instalacja pakietów (jeśli nie są zainstalowane)
 required_packages <- c(
   "naniar", "dplyr", "ggplot2", "prettydoc", "mice", "shape", "jomo", "pan", "tidyverse", "dlookr", "editrules", "VIM", "validate", "errorlocate", "gtsummary", "cardx", "corrplot", "ggstatsplot"
@@ -185,28 +184,92 @@ czyste_dane <- czyste_dane[, !grepl("_imp$", names(czyste_dane))]
 
 ### Wykresy podsumowujące sprzedaż
 
-Wykres przedstawia sumaryczną sprzedaż w Biedronkach w trzech miastach: Mandalay, Naypyitaw i Yangon. Dane zostały pogrupowane według miasta, a następnie obliczono sumę sprzedaży dla każdego z nich. We wszystkich trzech miastach sprzedaż jest na bardzo zbliżonym poziomie, różnice między nimi są niewielkie. Najwyższa sprzedaż występuje w Naypyitaw, ale różnica względem pozostałych miast nie jest znacząca. Yangon ma najniższą sprzedaż, ale nie jest to duża różnica.
+Wykres przedstawia procentowy podział całkowitej sprzedaży (w tysiącach) w trzech miastach: Mandalay, Naypyitaw i Yangon. Yangon osiągnął najwyższy udział w sprzedaży (34,2%), następnie Naypyitaw (33,1%), a Mandalay ma najniższy wynik (32,7%). Różnice między miastami są niewielkie, co wskazuje na stosunkowo równomierny rozkład sprzedaży.
 
 
-```{r summary-plots, echo=TRUE, message=FALSE, warning=FALSE}
+```{r total-city-plots, echo=FALSE, message=FALSE, warning=FALSE}
 # Sprzedaż Total według miasta
 czyste_dane %>%
   group_by(City) %>%
   summarise(Total_Sum = sum(Total, na.rm = TRUE)) %>%
-  ggplot(aes(x = City, y = Total_Sum, fill = City)) +
-  geom_bar(stat = "identity") +
-  theme_minimal()
+  arrange(desc(Total_Sum)) %>%
+  mutate(Percentage = Total_Sum / sum(Total_Sum) * 100) %>%  # Obliczenie procentów
+  ggplot(aes(x = "", y = Total_Sum, fill = City, label = paste0(round(Percentage, 1), "%"))) + 
+  geom_bar(stat = "identity", width = 1, show.legend = TRUE, alpha = 0.85) +
+  coord_polar("y") +  # Tworzenie wykresu kołowego
+  scale_fill_manual(values = c(
+    "olivedrab", "palevioletred2", "moccasin", "olivedrab", "lightcoral", "navajowhite"
+  )) +  # Kolory dla miast
+  geom_text(position = position_stack(vjust = 0.5), color = "white", size = 5) +  # Dodanie procentów na wykresie
+  labs(
+    title = "Total Sales (in thousands) by City",
+    subtitle = "Comparison of total sales across cities",
+    x = NULL,
+    y = "Total Sales (USD)"
+  ) +
+  scale_y_continuous(labels = function(x) x / 1000, name = "Total Sales (in thousands)")+
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "lightcoral"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(size = 14, face = "bold", color = "gray30"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+```
+
+Wykres przedstawia procentowy rozkład zakupów według płci w różnych liniach produktów. Kobiety (oznaczone kolorem czerwonym) dominują w większości kategorii zakupowych, zwłaszcza w „Fashion accessories” i „Health and beauty”. Mężczyźni (oznaczeni kolorem niebieskim) mają większy udział w zakupach „Electronic accessories” oraz „Sports and travel”. W innych kategoriach, takich jak „Food and beverages” oraz „Home and lifestyle”, podział jest bardziej zrównoważony.
+
+```{r gender-product-plots, echo=FALSE, message=FALSE, warning=FALSE}
 
 # Sprzedaż według typu klienta
 czyste_dane %>%
-  group_by(`Customer type`) %>%
-  summarise(Total = n()) %>%
-  ggplot(aes(x = `Customer type`, y = Total, fill = `Customer type`)) +
-  geom_bar(stat = "identity") +
-  theme_minimal()
+  group_by(Gender, `Product line`) %>%
+  summarise(Quantity = n()) %>%
+  mutate(Percentage = Quantity / sum(Quantity) * 100) %>%  # Obliczenie procentowego udziału
+  ggplot(aes(x = `Product line`, y = Percentage, fill = Gender)) +
+  geom_bar(stat = "identity", position = "fill", alpha = 0.85) +  # Procentowy wykres skumulowany
+  scale_fill_manual(values = c("lightcoral", "steelblue2")) +  # Kolory dla płci
+  labs(
+    title = "Product Line Purchases by Gender",
+    subtitle = "Percentage distribution of product purchases by gender",
+    x = "Product Line",
+    y = "Percentage",
+    fill = "Gender"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "steelblue"),
+    plot.subtitle = element_text(hjust = 0.5, size = 14, color = "gray40"),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "bold"),
+    axis.text = element_text(size = 12, color = "gray30"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted")
+  )
+  
 ```
 
-Słupki są prawie równej wysokości, co oznacza, że liczba zakupów dokonywanych przez członków i zwykłych klientów jest zbliżona. Wykres pokazuje liczbę transakcji (nie sumę sprzedaży w wartości pieniężnej). Może to sugerować, że zarówno członkowie, jak i zwykli klienci dokonują podobnej liczby zakupów, ale nie wiadomo, czy ich średnia wartość koszyka zakupowego jest taka sama.
+Wykres przedstawia zależność między liczbą zakupionych produktów a całkowitą ceną z podatkiem. Widoczna jest rosnąca tendencja – im więcej produktów kupiono, tym wyższa była łączna cena. Boxploty wskazują na zmienność cen dla różnych ilości zakupionych produktów, a zakresy wartości sugerują, że ceny mogą się różnić w zależności od rodzaju produktów.
+
+```{r amount-price-plots, echo=FALSE, message=FALSE, warning=FALSE}
+# Wykres zależności liczby zakupionych produktów vs całkowitej ceny z podatkiem  
+
+ggplot(czyste_dane, aes(x = factor(Quantity), y = Total)) +
+  geom_boxplot(color = "lightgreen", fill = "darkgreen", alpha = 0.7) +  # Tworzenie boxplotu
+  labs(
+    title = "Zależność liczby kupionych produktów vs ceny z podatkiem",
+    x = "Liczba zakupionych produktów",
+    y = "Całkowita cena z podatkiem"
+  ) +
+  theme_minimal() +  # Estetyczny, minimalny styl
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
 
 ------------------------------------------------------------------------
 
@@ -214,7 +277,7 @@ Słupki są prawie równej wysokości, co oznacza, że liczba zakupów dokonywan
 
 ### Statystyki opisowe dla wybranych zmiennych
 
-Statystyki opisowe dostarczają podstawowych informacji o rozkładzie zmiennych w zależności od płci klientów.
+Przedstawione statystyki porównują różne cechy klientów pod względem płci (kobiety i mężczyźni) oraz analizują różnice w ich zachowaniach zakupowych. Nie stwierdzono istotnych statystycznie różnic między kobietami a mężczyznami pod względem miejsca zamieszkania (p = 0,14). Podział klientów na członków programu lojalnościowego i klientów zwykłych nie wykazuje istotnych różnic między płciami (p = 0,2). Wybory dotyczące kategorii produktów są porównywalne między kobietami a mężczyznami (p = 0,3). Średnia ocena zakupów jest zbliżona w obu grupach i wynosi 7,10 (kobiety) oraz 6,90 (mężczyźni), bez istotnej statystycznie różnicy (p > 0,9). Natomiast ilość kupowanych produktów różni się znacząco (p = 0,020). Kobiety kupują średnio więcej (mediana 6,00) niż mężczyźni (mediana 5,00). Nie zaobserwowano znaczących różnic w strukturze demograficznej klientów ani w wyborze kategorii produktów. Jednak kobiety kupują średnio większe ilości produktów niż mężczyźni, co jest jedyną istotną różnicą statystyczną w analizowanych danych.
 
 ```{r descriptive-statistics, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
@@ -226,7 +289,17 @@ czyste_dane %>%
 
 ### Macierz korelacji
 
-Macierz korelacji pozwala określić, jakie zależności występują między zmiennymi numerycznymi.
+Macierz korelacji przedstawia zależności między czterema zmiennymi: cena jednostkowa (Unit price), ilość (Quantity), łączna wartość (Total) oraz podatek 5% (Tax 5%). 
+
+Cena jednostkowa (Unit price) nie wykazuje istotnej korelacji z ilością (Quantity), co oznacza, że liczba kupowanych produktów nie zależy od ceny jednostkowej. Jest dodatnio skorelowana z całkowitą wartością zakupu (Total) oraz podatkiem 5% (Tax 5%), co jest logiczne, ponieważ wyższa cena jednostkowa wpływa na wzrost wartości zakupu i podatku.
+
+Ilość (Quantity) nie jest skorelowana z ceną jednostkową, co sugeruje, że klienci kupują podobne ilości produktów niezależnie od ich ceny.
+Jest silnie dodatnio skorelowana z całkowitą wartością zakupu (Total), co oznacza, że im większa liczba zakupionych jednostek, tym wyższa wartość transakcji.
+
+Łączna wartość (Total) jest dodatnio skorelowana zarówno z ilością, jak i ceną jednostkową, co potwierdza, że wzrost któregokolwiek z tych czynników prowadzi do wzrostu całkowitej wartości transakcji.
+Wykazuje silną dodatnią korelację z podatkiem 5% (Tax 5%), ponieważ podatek jest naliczany jako stały procent od wartości zakupu.
+
+Podatek 5% (Tax 5%) jest w pełni skorelowany z łączną wartością zakupu (Total), co wynika z faktu, że jest on obliczany jako stały procent od tej wartości.
 
 ```{r correlation-matrix, echo=TRUE, message=FALSE, warning=FALSE}
 # Obliczanie korelacji
@@ -277,7 +350,7 @@ czyste_dane %>%
 
 Na podstawie analizy danych supermarketu można wyciągnąć następujące wnioski:
 
--   Cena jednostkowa istotnie różni się pomiędzy różnymi liniami produktów.
+-   Cena jednostkowa w analizowanych okresie istotnie różni się pomiędzy różnymi liniami produktów.
 -   Sprzedaż Total wykazuje różnice w zależności od miasta oraz rodzaju klientów.
 -   Niektóre zmienne posiadały braki danych, jednak zostały one skutecznie zarządzone poprzez imputację.
 -   Korelacja między zmiennymi pozwala lepiej zrozumieć, jakie czynniki wpływają na poziom sprzedaży i satysfakcję klientów.
