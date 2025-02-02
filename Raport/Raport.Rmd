@@ -158,7 +158,7 @@ Na podstawie wykresów można stwierdzić, że braki danych występują w kolumn
 
 ### Wykresy zależności
 
-Analiza pokazuje, czy oceny klientów mają związek z dochodem brutto oraz czy różnią się w zależności od lokalizacji sklepu.
+Analiza pokazuje, czy oceny klientów mają związek z dochodem brutto oraz czy różnią się w zależności od lokalizacji sklepu. Brak wyraźnej zależności między dochodem brutto a oceną – punkty są rozrzucone losowo, co sugeruje brak silnej korelacji. Oznacza to, że wyższy dochód brutto niekoniecznie prowadzi do wyższej oceny.
 
 ```{r scatter-plots, echo=TRUE, message=FALSE, warning=FALSE}
 # Zależność między Rating a Gross Income
@@ -172,7 +172,8 @@ ggplot(supermarket_new, aes(x = Rating, y = City)) +
   theme_minimal()
 ```
 
-Brak wyraźnej zależności między dochodem brutto a oceną – punkty są rozrzucone losowo, co sugeruje brak silnej korelacji. Oznacza to, że wyższy dochód brutto niekoniecznie prowadzi do wyższej oceny.
+Rozkład punktów sugeruje, że oceny są podobne we wszystkich miastach – brak wyraźnych trendów wskazujących, że w jednym mieście oceny są wyższe lub niższe.
+
 
 ```{r clean data, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane <- hotdeck(supermarket_new)
@@ -183,6 +184,9 @@ czyste_dane <- czyste_dane[, !grepl("_imp$", names(czyste_dane))]
 ```
 
 ### Wykresy podsumowujące sprzedaż
+
+Wykres przedstawia sumaryczną sprzedaż w Biedronkach w trzech miastach: Mandalay, Naypyitaw i Yangon. Dane zostały pogrupowane według miasta, a następnie obliczono sumę sprzedaży dla każdego z nich. We wszystkich trzech miastach sprzedaż jest na bardzo zbliżonym poziomie, różnice między nimi są niewielkie. Najwyższa sprzedaż występuje w Naypyitaw, ale różnica względem pozostałych miast nie jest znacząca. Yangon ma najniższą sprzedaż, ale nie jest to duża różnica.
+
 
 ```{r summary-plots, echo=TRUE, message=FALSE, warning=FALSE}
 # Sprzedaż Total według miasta
@@ -201,6 +205,8 @@ czyste_dane %>%
   geom_bar(stat = "identity") +
   theme_minimal()
 ```
+
+Słupki są prawie równej wysokości, co oznacza, że liczba zakupów dokonywanych przez członków i zwykłych klientów jest zbliżona. Wykres pokazuje liczbę transakcji (nie sumę sprzedaży w wartości pieniężnej). Może to sugerować, że zarówno członkowie, jak i zwykli klienci dokonują podobnej liczby zakupów, ale nie wiadomo, czy ich średnia wartość koszyka zakupowego jest taka sama.
 
 ------------------------------------------------------------------------
 
