@@ -154,6 +154,8 @@ library(naniar)
 gg_miss_upset(supermarket_new, nsets = 3)
 ```
 
+Na podstawie wykresów można stwierdzić, że braki danych występują w kolumnach City, Gross income oraz Rating. Najczęściej brakuje danych w pojedynczych kolumnach, co może sugerować niezależne mechanizmy ich utraty. Najwięcej braków występuje w kolumnie City (116), następnie Rating (113), a potem gross income (20). 
+
 ### Wykresy zależności
 
 Analiza pokazuje, czy oceny klientów mają związek z dochodem brutto oraz czy różnią się w zależności od lokalizacji sklepu.
@@ -169,6 +171,8 @@ ggplot(supermarket_new, aes(x = Rating, y = City)) +
   geom_point(color = "darkorange", size = 2) +
   theme_minimal()
 ```
+
+Brak wyraźnej zależności między dochodem brutto a oceną – punkty są rozrzucone losowo, co sugeruje brak silnej korelacji. Oznacza to, że wyższy dochód brutto niekoniecznie prowadzi do wyższej oceny.
 
 ```{r clean data, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane <- hotdeck(supermarket_new)

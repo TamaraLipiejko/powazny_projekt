@@ -12,7 +12,7 @@
 
 <meta name="author" content="Tamara Lipiejko, Daria Lessnau, Amelia Sørensen, Adrianna Ceynowa" />
 
-<meta name="date" content="2025-02-01" />
+<meta name="date" content="2025-02-02" />
 
 <title>Raport</title>
 
@@ -152,7 +152,7 @@ code span.ot { color: #007020; }
 <h1 class="title toc-ignore">Raport</h1>
 <h3 class="author">Tamara Lipiejko, Daria Lessnau, Amelia Sørensen,
 Adrianna Ceynowa</h3>
-<h3 class="date">2025-02-01</h3>
+<h3 class="date">2025-02-02</h3>
 </div>
 </header>
 
@@ -179,8 +179,7 @@ Opisowa</a></li>
 <p>Celem tego raportu jest analiza zestawu danych, w tym czyszczenie
 danych, wizualizacja, analiza opisowa oraz wnioskowanie
 statystyczne.</p>
-<p><br />
-Obiektem analizy był zbiór danych, będący jedną z historycznych
+<p>Obiektem analizy był zbiór danych, będący jedną z historycznych
 sprzedaży firmy supermarketów Biedronka, która została zarejestrowana w
 3 różnych oddziałach przez 3 miesiące, od stycznia 2019 r. do marca 2019
 r.</p>
@@ -284,11 +283,17 @@ doświadczenia zakupowego</p></li>
 ##  3rd Qu.: 8.500  
 ##  Max.   :10.000  
 ##  NA&#39;s   :150</code></pre>
+<p>Dane zawierają informacje o sprzedaży, takie jak lokalizacja sklepów,
+ceny jednostkowe, ilości zakupionych produktów, rodzaj płatności i oceny
+klientów.</p>
 </div>
 <div id="czyszczenie-danych" class="section level3">
 <h3>Czyszczenie danych</h3>
 <div id="sprawdzenie-braków-danych" class="section level4">
 <h4>Sprawdzenie braków danych</h4>
+<p>Braki danych mogą wskazywać na problemy w procesie zbierania
+informacji. Sprawdzamy, które zmienne są najbardziej narażone na
+niekompletność.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Liczba braków danych</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">n_miss</span>(supermarket_new)</span></code></pre></div>
 <pre><code>## [1] 400</code></pre>
@@ -318,6 +323,8 @@ doświadczenia zakupowego</p></li>
 </div>
 <div id="usuwanie-wartości-specjalnych-i-zastosowanie-reguł-walidacji" class="section level4">
 <h4>Usuwanie wartości specjalnych i zastosowanie reguł walidacji</h4>
+<p>Reguły walidacji pomagają w wykrywaniu i eliminowaniu błędnych
+wartości, co poprawia jakość analizowanych danych.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>is.special <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(x)) <span class="sc">!</span><span class="fu">is.finite</span>(x) <span class="cf">else</span> <span class="fu">is.na</span>(x)</span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>}</span>
@@ -360,6 +367,8 @@ doświadczenia zakupowego</p></li>
 <h2>Wizualizacja Danych</h2>
 <div id="braki-danych" class="section level3">
 <h3>Braki danych</h3>
+<p>Wykrezy wizualizujące braki danych pomagają określić, które zmienne
+najczęściej zawierają braki.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Mapa braków danych</span></span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">vis_miss</span>(supermarket_new)</span></code></pre></div>
 <p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
@@ -370,6 +379,8 @@ doświadczenia zakupowego</p></li>
 </div>
 <div id="wykresy-zależności" class="section level3">
 <h3>Wykresy zależności</h3>
+<p>Analiza pokazuje, czy oceny klientów mają związek z dochodem brutto
+oraz czy różnią się w zależności od lokalizacji sklepu.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Zależność między Rating a Gross Income</span></span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">ggplot</span>(supermarket_new, <span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">gross income</span><span class="st">`</span>, <span class="at">y =</span> Rating)) <span class="sc">+</span></span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> City), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
@@ -410,6 +421,8 @@ doświadczenia zakupowego</p></li>
 <h2>Analiza Opisowa</h2>
 <div id="statystyki-opisowe-dla-wybranych-zmiennych" class="section level3">
 <h3>Statystyki opisowe dla wybranych zmiennych</h3>
+<p>Statystyki opisowe dostarczają podstawowych informacji o rozkładzie
+zmiennych w zależności od płci klientów.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>czyste_dane <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">select</span>(City, Gender, <span class="st">`</span><span class="at">Customer type</span><span class="st">`</span>, <span class="st">`</span><span class="at">Product line</span><span class="st">`</span>, Total, Rating, Quantity) <span class="sc">%&gt;%</span></span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Gender) <span class="sc">%&gt;%</span></span>
@@ -906,6 +919,8 @@ N = 499</span><span class="gt_footnote_marks" style="white-space:nowrap;font-sty
 </div>
 <div id="macierz-korelacji" class="section level3">
 <h3>Macierz korelacji</h3>
+<p>Macierz korelacji pozwala określić, jakie zależności występują między
+zmiennymi numerycznymi.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Obliczanie korelacji</span></span>
 <span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>numeric_data <span class="ot">&lt;-</span> czyste_dane <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">`</span><span class="at">Unit price</span><span class="st">`</span>, Quantity, Total, <span class="st">`</span><span class="at">Tax 5%</span><span class="st">`</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>corr_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(numeric_data, <span class="at">use =</span> <span class="st">&quot;complete.obs&quot;</span>)</span>
@@ -920,6 +935,8 @@ N = 499</span><span class="gt_footnote_marks" style="white-space:nowrap;font-sty
 <h2>Wnioskowanie Statystyczne</h2>
 <div id="porównanie-cen-jednostkowych-między-liniami-produktów" class="section level3">
 <h3>Porównanie cen jednostkowych między liniami produktów</h3>
+<p>Analiza pokazuje, które linie porduktów różnią się istotnie pod
+względem ceny jednostkowej.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>czyste_dane <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="fu">ggbetweenstats</span>(</span>
 <span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">`</span><span class="at">Product line</span><span class="st">`</span>,</span>
@@ -932,6 +949,8 @@ N = 499</span><span class="gt_footnote_marks" style="white-space:nowrap;font-sty
 </div>
 <div id="porównanie-cen-jednostkowych-według-typu-klienta" class="section level3">
 <h3>Porównanie cen jednostkowych według typu klienta</h3>
+<p>Analiza pokazuje, które typy klientów różnią się istotnie pod
+względem ceny jednostkowej.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>czyste_dane <span class="sc">%&gt;%</span></span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="fu">ggbetweenstats</span>(</span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">`</span><span class="at">Customer type</span><span class="st">`</span>,</span>
@@ -946,15 +965,17 @@ N = 499</span><span class="gt_footnote_marks" style="white-space:nowrap;font-sty
 </div>
 <div id="podsumowanie-i-wnioski" class="section level2">
 <h2>Podsumowanie i Wnioski</h2>
-<p>W analizie danych supermarketu odkryto kilka istotnych
-zależności:</p>
+<p>Na podstawie analizy danych supermarketu można wyciągnąć następujące
+wnioski:</p>
 <ul>
-<li>Cena jednostkowa różniła się istotnie w zależności od linii
+<li>Cena jednostkowa istotnie różni się pomiędzy różnymi liniami
 produktów.</li>
-<li>Sprzedaż Total była zróżnicowana między miastami oraz typami
+<li>Sprzedaż Total wykazuje różnice w zależności od miasta oraz rodzaju
 klientów.</li>
-<li>Braki danych były obecne w kilku kolumnach, lecz zostały skutecznie
-zarządzone.</li>
+<li>Niektóre zmienne posiadały braki danych, jednak zostały one
+skutecznie zarządzone poprzez imputację.</li>
+<li>Korelacja między zmiennymi pozwala lepiej zrozumieć, jakie czynniki
+wpływają na poziom sprzedaży i satysfakcję klientów.</li>
 </ul>
 <p>Szczegółowe wykresy i tabele wspomagają wizualizację tych
 wyników.</p>
