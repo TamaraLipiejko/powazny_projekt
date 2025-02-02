@@ -963,8 +963,21 @@ procent od tej wartości.</p>
 <h2>Wnioskowanie Statystyczne</h2>
 <div id="porównanie-cen-jednostkowych-między-liniami-produktów" class="section level3">
 <h3>Porównanie cen jednostkowych między liniami produktów</h3>
-<p>Analiza pokazuje, które linie porduktów różnią się istotnie pod
-względem ceny jednostkowej.</p>
+<p>Wykorzystano test Welcha ANOVA, który jest stosowany, gdy wariancje
+między grupami mogą się różnić. Wynik testu wskazuje wartość F(5,
+462.07) = 0.44, z p = 0.82, co oznacza, że różnice w cenach
+jednostkowych między kategoriami produktów nie są istotne
+statystycznie.</p>
+<p>Electronic accessories: średnia cena = 53.55 Fashion accessories:
+średnia cena = 57.15 Food and beverages: średnia cena = 56.01 Health and
+beauty: średnia cena = 54.85 Home and lifestyle: średnia cena = 55.32
+Sports and travel: średnia cena = 56.99 Wartości średnie są bardzo
+zbliżone, co dodatkowo potwierdza brak istotnych różnic między liniami
+produktowymi.</p>
+<p>Przeprowadzona analiza wykazała, że ceny jednostkowe produktów w
+różnych kategoriach nie różnią się znacząco. Wartość p = 0.82 sugeruje,
+że wszelkie zaobserwowane różnice mogą wynikać z losowej zmienności, a
+nie rzeczywistych rozbieżności w cenach</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>czyste_dane <span class="sc">%&gt;%</span></span>
 <span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">ggbetweenstats</span>(</span>
 <span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">`</span><span class="at">Product line</span><span class="st">`</span>,</span>
@@ -977,8 +990,22 @@ względem ceny jednostkowej.</p>
 </div>
 <div id="porównanie-cen-jednostkowych-według-typu-klienta" class="section level3">
 <h3>Porównanie cen jednostkowych według typu klienta</h3>
-<p>Analiza pokazuje, które typy klientów różnią się istotnie pod
-względem ceny jednostkowej.</p>
+<p>Wykres przedstawia porównanie cen jednostkowych produktów w
+zależności od typu klienta – członków programu lojalnościowego
+(„Member”) oraz klientów zwykłych („Normal”). Średnia cena jednostkowa
+dla klientów „Member” wynosi 56,21, a dla klientów „Normal” 55,14.
+Różnica między grupami jest niewielka i nieistotna statystycznie. Test
+t-Studenta dla prób o niejednakowych wariancjach (t_Welch) dał wynik
+t(997.8) = 0.64, p = 0.52, co oznacza, że nie ma istotnej różnicy między
+grupami na poziomie istotności 0.05. Wartość efektu Hedgesa (g_Hedges)
+wynosi 0.04, co wskazuje na bardzo mały efekt.</p>
+<p>Przedział ufności dla różnicy średnich wynosi [-0.08, 0.16], co
+oznacza, że rzeczywista różnica może być bliska zeru, a nawet działać w
+przeciwnym kierunku. Bayesowski współczynnik wiarygodności (log_BF10 =
+2.45) sugeruje, że nie ma silnych dowodów na różnicę między grupami.</p>
+<p>Ogólnie rzecz biorąc, analiza pokazuje, że ceny jednostkowe produktów
+nie różnią się istotnie między członkami programu lojalnościowego a
+klientami zwykłymi.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>czyste_dane <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">ggbetweenstats</span>(</span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">`</span><span class="at">Customer type</span><span class="st">`</span>,</span>
@@ -993,20 +1020,37 @@ względem ceny jednostkowej.</p>
 </div>
 <div id="podsumowanie-i-wnioski" class="section level2">
 <h2>Podsumowanie i Wnioski</h2>
-<p>Na podstawie analizy danych supermarketu można wyciągnąć następujące
-wnioski:</p>
-<ul>
-<li>Cena jednostkowa w analizowanych okresie istotnie różni się pomiędzy
-różnymi liniami produktów.</li>
-<li>Sprzedaż Total wykazuje różnice w zależności od miasta oraz rodzaju
-klientów.</li>
-<li>Niektóre zmienne posiadały braki danych, jednak zostały one
-skutecznie zarządzone poprzez imputację.</li>
-<li>Korelacja między zmiennymi pozwala lepiej zrozumieć, jakie czynniki
-wpływają na poziom sprzedaży i satysfakcję klientów.</li>
-</ul>
-<p>Szczegółowe wykresy i tabele wspomagają wizualizację tych
-wyników.</p>
+<p>Przeprowadzona analiza danych sprzedażowych supermarketów Biedronka
+pozwoliła na wyciągnięcie kilku istotnych wniosków.</p>
+<p>Jakość danych – Zidentyfikowano brakujące wartości w zmiennych City,
+Gross income oraz Rating. Po przeprowadzeniu czyszczenia danych i
+imputacji braków możliwe było przeprowadzenie dalszej analizy bez
+istotnych zakłóceń.</p>
+<p>Struktura sprzedaży – Sprzedaż była równomiernie rozłożona pomiędzy
+trzy oddziały, bez wyraźnych różnic w generowanych przychodach.</p>
+<p>Profil klientów – Kobiety częściej kupowały produkty z kategorii
+Fashion accessories oraz Health and beauty, podczas gdy mężczyźni
+częściej wybierali Electronic accessories i Sports and travel. Różnice
+te jednak nie miały dużego wpływu na ogólną wartość sprzedaży.</p>
+<p>Zachowania zakupowe – Kobiety kupowały średnio więcej produktów niż
+mężczyźni, co było jedyną istotną różnicą statystyczną w analizowanych
+danych. Nie stwierdzono istotnych różnic w wyborze sposobu płatności ani
+w ocenach satysfakcji klientów w zależności od płci.</p>
+<p>Ceny jednostkowe produktów – Testy statystyczne nie wykazały
+istotnych różnic w cenach jednostkowych pomiędzy poszczególnymi
+kategoriami produktów. Oznacza to, że różne linie produktowe mają
+zbliżone ceny, co może wynikać z polityki cenowej firmy.</p>
+<p>Ocena klientów a dochód brutto – Nie zaobserwowano istotnej korelacji
+między dochodem brutto a oceną klientów. Oznacza to, że wysokość
+zarobków klientów nie wpływa znacząco na ich poziom satysfakcji z
+zakupów.</p>
+<p>Podsumowując, analiza wykazała, że sprzedaż w badanym okresie była
+stabilna i nie występowały duże różnice w zachowaniach zakupowych
+klientów w zależności od lokalizacji czy płci. Wyniki te mogą być
+przydatne w optymalizacji oferty oraz strategii marketingowej
+supermarketów Biedronka, szczególnie w kontekście docelowych grup
+klientów oraz polityki cenowej.</p>
+<p>.</p>
 <hr />
 </div>
     </section>

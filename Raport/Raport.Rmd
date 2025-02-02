@@ -316,7 +316,17 @@ corrplot(corr_matrix, method = "color")
 
 ### Porównanie cen jednostkowych między liniami produktów
 
-Analiza pokazuje, które linie porduktów różnią się istotnie pod względem ceny jednostkowej.
+Wykorzystano test Welcha ANOVA, który jest stosowany, gdy wariancje między grupami mogą się różnić. Wynik testu wskazuje wartość F(5, 462.07) = 0.44, z p = 0.82, co oznacza, że różnice w cenach jednostkowych między kategoriami produktów nie są istotne statystycznie.
+
+Electronic accessories: średnia cena = 53.55
+Fashion accessories: średnia cena = 57.15
+Food and beverages: średnia cena = 56.01
+Health and beauty: średnia cena = 54.85
+Home and lifestyle: średnia cena = 55.32
+Sports and travel: średnia cena = 56.99
+Wartości średnie są bardzo zbliżone, co dodatkowo potwierdza brak istotnych różnic między liniami produktowymi.
+
+Przeprowadzona analiza wykazała, że ceny jednostkowe produktów w różnych kategoriach nie różnią się znacząco. Wartość p = 0.82 sugeruje, że wszelkie zaobserwowane różnice mogą wynikać z losowej zmienności, a nie rzeczywistych rozbieżności w cenach
 
 ```{r unit-price-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
@@ -331,7 +341,11 @@ czyste_dane %>%
 
 ### Porównanie cen jednostkowych według typu klienta
 
-Analiza pokazuje, które typy klientów różnią się istotnie pod względem ceny jednostkowej.
+Wykres przedstawia porównanie cen jednostkowych produktów w zależności od typu klienta – członków programu lojalnościowego („Member”) oraz klientów zwykłych („Normal”). Średnia cena jednostkowa dla klientów „Member” wynosi 56,21, a dla klientów „Normal” 55,14. Różnica między grupami jest niewielka i nieistotna statystycznie. Test t-Studenta dla prób o niejednakowych wariancjach (t_Welch) dał wynik t(997.8) = 0.64, p = 0.52, co oznacza, że nie ma istotnej różnicy między grupami na poziomie istotności 0.05. Wartość efektu Hedgesa (g_Hedges) wynosi 0.04, co wskazuje na bardzo mały efekt.
+
+Przedział ufności dla różnicy średnich wynosi [-0.08, 0.16], co oznacza, że rzeczywista różnica może być bliska zeru, a nawet działać w przeciwnym kierunku. Bayesowski współczynnik wiarygodności (log_BF10 = 2.45) sugeruje, że nie ma silnych dowodów na różnicę między grupami.
+
+Ogólnie rzecz biorąc, analiza pokazuje, że ceny jednostkowe produktów nie różnią się istotnie między członkami programu lojalnościowego a klientami zwykłymi.
 
 ```{r customer-type-comparison, echo=TRUE, message=FALSE, warning=FALSE}
 czyste_dane %>%
@@ -348,13 +362,22 @@ czyste_dane %>%
 
 ## Podsumowanie i Wnioski
 
-Na podstawie analizy danych supermarketu można wyciągnąć następujące wnioski:
+Przeprowadzona analiza danych sprzedażowych supermarketów Biedronka pozwoliła na wyciągnięcie kilku istotnych wniosków.
 
--   Cena jednostkowa w analizowanych okresie istotnie różni się pomiędzy różnymi liniami produktów.
--   Sprzedaż Total wykazuje różnice w zależności od miasta oraz rodzaju klientów.
--   Niektóre zmienne posiadały braki danych, jednak zostały one skutecznie zarządzone poprzez imputację.
--   Korelacja między zmiennymi pozwala lepiej zrozumieć, jakie czynniki wpływają na poziom sprzedaży i satysfakcję klientów.
+Jakość danych – Zidentyfikowano brakujące wartości w zmiennych City, Gross income oraz Rating. Po przeprowadzeniu czyszczenia danych i imputacji braków możliwe było przeprowadzenie dalszej analizy bez istotnych zakłóceń.
 
-Szczegółowe wykresy i tabele wspomagają wizualizację tych wyników.
+Struktura sprzedaży – Sprzedaż była równomiernie rozłożona pomiędzy trzy oddziały, bez wyraźnych różnic w generowanych przychodach.
+
+Profil klientów – Kobiety częściej kupowały produkty z kategorii Fashion accessories oraz Health and beauty, podczas gdy mężczyźni częściej wybierali Electronic accessories i Sports and travel. Różnice te jednak nie miały dużego wpływu na ogólną wartość sprzedaży.
+
+Zachowania zakupowe – Kobiety kupowały średnio więcej produktów niż mężczyźni, co było jedyną istotną różnicą statystyczną w analizowanych danych. Nie stwierdzono istotnych różnic w wyborze sposobu płatności ani w ocenach satysfakcji klientów w zależności od płci.
+
+Ceny jednostkowe produktów – Testy statystyczne nie wykazały istotnych różnic w cenach jednostkowych pomiędzy poszczególnymi kategoriami produktów. Oznacza to, że różne linie produktowe mają zbliżone ceny, co może wynikać z polityki cenowej firmy.
+
+Ocena klientów a dochód brutto – Nie zaobserwowano istotnej korelacji między dochodem brutto a oceną klientów. Oznacza to, że wysokość zarobków klientów nie wpływa znacząco na ich poziom satysfakcji z zakupów.
+
+Podsumowując, analiza wykazała, że sprzedaż w badanym okresie była stabilna i nie występowały duże różnice w zachowaniach zakupowych klientów w zależności od lokalizacji czy płci. Wyniki te mogą być przydatne w optymalizacji oferty oraz strategii marketingowej supermarketów Biedronka, szczególnie w kontekście docelowych grup klientów oraz polityki cenowej.
+
+.
 
 ------------------------------------------------------------------------
